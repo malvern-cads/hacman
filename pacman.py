@@ -168,6 +168,7 @@ def startGame():
     bll = len(block_list)
     score = 0
     done = False
+    start_time = pygame.time.get_ticks()
 
     while done is False:
         # ALL EVENT PROCESSING SHOULD GO BELOW THIS COMMENT
@@ -247,6 +248,12 @@ def startGame():
 
         text = font.render("Score: "+str(score)+"/"+str(bll), True, red)
         screen.blit(text, [10, 10])
+
+        # Show the elapsed time
+        time_difference = round((pygame.time.get_ticks() - start_time) / 1000,
+                                1)
+        text = font.render("Time: " + str(time_difference), True, red)
+        screen.blit(text, [screen.get_size()[1] - 10 - text.get_width(), 10])
 
         if score == bll:
             doNext("Congratulations, you won!", 145, all_sprites_list,

@@ -67,12 +67,12 @@ pygame.font.init()
 font = pygame.font.Font("OverpassMono-Regular.ttf", 24)
 
 # default locations for Pacman and monstas
-w = 303-16  # Width
-p_h = (7*60)+19  # Pacman height
-m_h = (4*60)+19  # Monster height
-b_h = (3*60)+19  # Binky height
-i_w = 303-16-32  # Inky width
-c_w = 303+(32-16)  # Clyde width
+width = 303-16  # Width
+player_height = (7*60)+19  # Pacman height
+ghost_height = (4*60)+19  # Monster height
+binky_height = (3*60)+19  # Binky height
+inky_width = 303-16-32  # Inky width
+clyde_width = 303+(32-16)  # Clyde width
 
 
 class Game:
@@ -94,26 +94,26 @@ class Game:
         directions = json.load(open("directions.json", "r"))
 
         # Create sprites
-        self.player = Player(w, p_h, "images/Trollman.png")
+        self.player = Player(width, player_height, "images/Trollman.png")
         self.all_sprites_list.add(self.player)
         self.player_collide.add(self.player)
 
-        self.blinky = Ghost(w, b_h, "images/Blinky.png")
+        self.blinky = Ghost(width, binky_height, "images/Blinky.png")
         self.blinky.directions = directions["blinky"]
         self.all_sprites_list.add(self.blinky)
         self.ghost_list.add(self.blinky)
 
-        self.pinky = Ghost(w, m_h, "images/Pinky.png")
+        self.pinky = Ghost(width, ghost_height, "images/Pinky.png")
         self.pinky.directions = directions["pinky"]
         self.all_sprites_list.add(self.pinky)
         self.ghost_list.add(self.pinky)
 
-        self.inky = Ghost(i_w, m_h, "images/Inky.png")
+        self.inky = Ghost(inky_width, ghost_height, "images/Inky.png")
         self.inky.directions = directions["inky"]
         self.all_sprites_list.add(self.inky)
         self.ghost_list.add(self.inky)
 
-        self.clyde = Ghost(c_w, m_h, "images/Clyde.png")
+        self.clyde = Ghost(clyde_width, ghost_height, "images/Clyde.png")
         self.clyde.directions = directions["clyde"]
         self.all_sprites_list.add(self.clyde)
         self.ghost_list.add(self.clyde)

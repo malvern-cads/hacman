@@ -230,11 +230,13 @@ class Game:
 
             if self.player.score == len(self.dot_list):
                 doNext("Congrats, you won!", 145)
+                return
 
             ghost_collide = pygame.sprite.spritecollide(self.player, self.ghost_list, False)
 
             if ghost_collide:
                 doNext("Game Over!", 235)
+                return
 
             # Partially update the display
             pygame.display.flip()
@@ -248,17 +250,20 @@ current_game = Game()
 def doNext(message, left):
     logger.info("Showing message box...")
 
-    while True:
+    waiting = True
+
+    while waiting:
+        print(".", end="")
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                return
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
+                    return
                 if event.key == pygame.K_RETURN:
-                    # Create a new game and start it
-                    current_game = Game()
-                    current_game.start()
+                    waiting = False
 
         # Grey background
         w = pygame.Surface((400, 200))  # the size of your rect
@@ -278,6 +283,10 @@ def doNext(message, left):
         pygame.display.flip()
 
         clock.tick(10)
+
+    # Create a new game and start it
+    current_game = Game()
+    current_game.start()
 
 
 logger.info("Starting hacman!")

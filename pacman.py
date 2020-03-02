@@ -177,23 +177,23 @@ def startGame():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
-                    Pacman.changespeed(-30, 0)
+                    Pacman.setspeed(-30, 0)
                 if event.key == pygame.K_RIGHT:
-                    Pacman.changespeed(30, 0)
+                    Pacman.setspeed(30, 0)
                 if event.key == pygame.K_UP:
-                    Pacman.changespeed(0, -30)
+                    Pacman.setspeed(0, -30)
                 if event.key == pygame.K_DOWN:
-                    Pacman.changespeed(0, 30)
+                    Pacman.setspeed(0, 30)
 
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT:
-                    Pacman.changespeed(30, 0)
-                if event.key == pygame.K_RIGHT:
-                    Pacman.changespeed(-30, 0)
-                if event.key == pygame.K_UP:
-                    Pacman.changespeed(0, 30)
-                if event.key == pygame.K_DOWN:
-                    Pacman.changespeed(0, -30)
+            # if event.type == pygame.KEYUP:
+            #     if event.key == pygame.K_LEFT:
+            #         Pacman.changespeed(30, 0)
+            #     if event.key == pygame.K_RIGHT:
+            #         Pacman.changespeed(-30, 0)
+            #     if event.key == pygame.K_UP:
+            #         Pacman.changespeed(0, 30)
+            #     if event.key == pygame.K_DOWN:
+            #         Pacman.changespeed(0, -30)
 
         # ALL EVENT PROCESSING SHOULD GO ABOVE THIS COMMENT
 

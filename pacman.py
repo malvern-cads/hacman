@@ -2,6 +2,8 @@
 # https://github.com/hbokmann/Pacman
 
 import pygame
+import json
+from logzero import logger
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -9,7 +11,7 @@ blue = (0, 0, 255)
 green = (0, 255, 0)
 red = (255, 0, 0)
 purple = (255, 0, 255)
-yellow = (255, 255,   0)
+yellow = (255, 255, 0)
 
 Trollicon = pygame.image.load('images/Trollman.png')
 pygame.display.set_icon(Trollicon)
@@ -38,44 +40,8 @@ def setupRoomOne(all_sprites_list):
     wall_list = pygame.sprite.RenderPlain()
 
     # This is a list of walls. Each is in the form [x, y, width, height]
-    walls = [[0, 0, 6, 600],
-             [0, 0, 600, 6],
-             [0, 600, 606, 6],
-             [600, 0, 6, 606],
-             [300, 0, 6, 66],
-             [60, 60, 186, 6],
-             [360, 60, 186, 6],
-             [60, 120, 66, 6],
-             [60, 120, 6, 126],
-             [180, 120, 246, 6],
-             [300, 120, 6, 66],
-             [480, 120, 66, 6],
-             [540, 120, 6, 126],
-             [120, 180, 126, 6],
-             [120, 180, 6, 126],
-             [360, 180, 126, 6],
-             [480, 180, 6, 126],
-             [180, 240, 6, 126],
-             [180, 360, 246, 6],
-             [420, 240, 6, 126],
-             [240, 240, 42, 6],
-             [324, 240, 42, 6],
-             [240, 240, 6, 66],
-             [240, 300, 126, 6],
-             [360, 240, 6, 66],
-             [0, 300, 66, 6],
-             [540, 300, 66, 6],
-             [60, 360, 66, 6],
-             [60, 360, 6, 186],
-             [480, 360, 66, 6],
-             [540, 360, 6, 186],
-             [120, 420, 366, 6],
-             [120, 420, 6, 66],
-             [480, 420, 6, 66],
-             [180, 480, 246, 6],
-             [300, 480, 6, 66],
-             [120, 540, 126, 6],
-             [360, 540, 126, 6]]
+    logger.debug("Loading walls file...")
+    walls = json.load(open("walls.json", "r"))
 
     # Loop through the list. Create the wall, add it to the list
     for item in walls:
@@ -154,12 +120,10 @@ class Player(pygame.sprite.Sprite):
 
         old_x = self.rect.left
         new_x = old_x+self.change_x
-        prev_x = old_x+self.prev_x
         self.rect.left = new_x
 
         old_y = self.rect.top
         new_y = old_y+self.change_y
-        prev_y = old_y+self.prev_y
 
         # Did this update cause us to hit a wall?
         x_collide = pygame.sprite.spritecollide(self, walls, False)
@@ -188,7 +152,7 @@ class Player(pygame.sprite.Sprite):
                 #     self.rect.left=old_x
                 #     print('b')
 
-        if gate != False:
+        if gate is not False:
             gate_hit = pygame.sprite.spritecollide(self, gate, False)
             if gate_hit:
                 self.rect.left = old_x
@@ -220,111 +184,12 @@ class Ghost(Player):
             return [0, 0]
 
 
-Pinky_directions = [
-    [0, -30, 4],
-    [15, 0, 9],
-    [0, 15, 11],
-    [-15, 0, 23],
-    [0, 15, 7],
-    [15, 0, 3],
-    [0, -15, 3],
-    [15, 0, 19],
-    [0, 15, 3],
-    [15, 0, 3],
-    [0, 15, 3],
-    [15, 0, 3],
-    [0, -15, 15],
-    [-15, 0, 7],
-    [0, 15, 3],
-    [-15, 0, 19],
-    [0, -15, 11],
-    [15, 0, 9]
-]
-
-Blinky_directions = [
-    [0, -15, 4],
-    [15, 0, 9],
-    [0, 15, 11],
-    [15, 0, 3],
-    [0, 15, 7],
-    [-15, 0, 11],
-    [0, 15, 3],
-    [15, 0, 15],
-    [0, -15, 15],
-    [15, 0, 3],
-    [0, -15, 11],
-    [-15, 0, 3],
-    [0, -15, 11],
-    [-15, 0, 3],
-    [0, -15, 3],
-    [-15, 0, 7],
-    [0, -15, 3],
-    [15, 0, 15],
-    [0, 15, 15],
-    [-15, 0, 3],
-    [0, 15, 3],
-    [-15, 0, 3],
-    [0, -15, 7],
-    [-15, 0, 3],
-    [0, 15, 7],
-    [-15, 0, 11],
-    [0, -15, 7],
-    [15, 0, 5]
-]
-
-Inky_directions = [
-    [30, 0, 2],
-    [0, -15, 4],
-    [15, 0, 10],
-    [0, 15, 7],
-    [15, 0, 3],
-    [0, -15, 3],
-    [15, 0, 3],
-    [0, -15, 15],
-    [-15, 0, 15],
-    [0, 15, 3],
-    [15, 0, 15],
-    [0, 15, 11],
-    [-15, 0, 3],
-    [0, -15, 7],
-    [-15, 0, 11],
-    [0, 15, 3],
-    [-15, 0, 11],
-    [0, 15, 7],
-    [-15, 0, 3],
-    [0, -15, 3],
-    [-15, 0, 3],
-    [0, -15, 15],
-    [15, 0, 15],
-    [0, 15, 3],
-    [-15, 0, 15],
-    [0, 15, 11],
-    [15, 0, 3],
-    [0, -15, 11],
-    [15, 0, 11],
-    [0, 15, 3],
-    [15, 0, 1],
-]
-
-Clyde_directions = [
-    [-30, 0, 2],
-    [0, -15, 4],
-    [15, 0, 5],
-    [0, 15, 7],
-    [-15, 0, 11],
-    [0, -15, 7],
-    [-15, 0, 3],
-    [0, 15, 7],
-    [-15, 0, 7],
-    [0, 15, 15],
-    [15, 0, 15],
-    [0, -15, 3],
-    [-15, 0, 11],
-    [0, -15, 7],
-    [15, 0, 3],
-    [0, -15, 11],
-    [15, 0, 9],
-]
+logger.debug("Loading directions file...")
+directions = json.load(open("directions.json", "r"))
+Pinky_directions = directions["pinky"]
+Blinky_directions = directions["blinky"]
+Inky_directions = directions["inky"]
+Clyde_directions = directions["clyde"]
 
 pl = len(Pinky_directions)-1
 bl = len(Blinky_directions)-1
@@ -369,6 +234,8 @@ c_w = 303+(32-16)  # Clyde width
 
 
 def startGame():
+    logger.info("Starting game...")
+
     all_sprites_list = pygame.sprite.RenderPlain()
     block_list = pygame.sprite.RenderPlain()
     monsta_list = pygame.sprite.RenderPlain()
@@ -412,7 +279,8 @@ def startGame():
     # Draw the grid
     for row in range(19):
         for column in range(19):
-            if (row == 7 or row == 8) and (column == 8 or column == 9 or column == 10):
+            if ((row == 7 or row == 8) and
+                    (column == 8 or column == 9 or column == 10)):
                 continue
             else:
                 block = Block(yellow, 4, 4)
@@ -437,9 +305,8 @@ def startGame():
     bll = len(block_list)
     score = 0
     done = False
-    i = 0
 
-    while done == False:
+    while done is False:
         # ALL EVENT PROCESSING SHOULD GO BELOW THIS COMMENT
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -536,7 +403,10 @@ def startGame():
         clock.tick(10)
 
 
-def doNext(message, left, all_sprites_list, block_list, monsta_list, pacman_collide, wall_list, gate):
+def doNext(message, left, all_sprites_list, block_list, monsta_list,
+           pacman_collide, wall_list, gate):
+    logger.info("Showing message box...")
+
     while True:
         # ALL EVENT PROCESSING SHOULD GO BELOW THIS COMMENT
         for event in pygame.event.get():
@@ -574,6 +444,6 @@ def doNext(message, left, all_sprites_list, block_list, monsta_list, pacman_coll
         clock.tick(10)
 
 
+logger.info("Starting hacman!")
 startGame()
-
 pygame.quit()

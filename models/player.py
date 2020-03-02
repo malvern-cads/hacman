@@ -14,7 +14,7 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         # Set height, width
-        self.image = pygame.image.load(filename).convert()
+        self.image = pygame.image.load(filename).convert_alpha()
 
         # Make our top-left corner the passed-in location.
         self.rect = self.image.get_rect()

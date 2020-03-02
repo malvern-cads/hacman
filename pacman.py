@@ -8,6 +8,7 @@ from models.wall import Wall
 from models.player import Player
 from models.ghost import Ghost
 from models.dot import Dot
+import scoring
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -65,6 +66,7 @@ clock = pygame.time.Clock()
 
 pygame.font.init()
 font = pygame.font.Font("OverpassMono-Regular.ttf", 24)
+small_font = pygame.font.Font("OverpassMono-Regular.ttf", 16)
 
 # default locations for Pacman and monstas
 width = 303-16  # Width
@@ -171,7 +173,8 @@ class Game:
         self.clyde.update(self.walls, False)
 
         # Get a list of the dots that the player has hit
-        dots_hit = pygame.sprite.spritecollide(self.player, self.dot_list, True)
+        dots_hit = pygame.sprite.spritecollide(self.player, self.dot_list,
+                                               True)
 
         if len(dots_hit) > 0:
             self.player.score += 1
@@ -222,13 +225,16 @@ class Game:
             self.do_draw()
 
             if self.player.score == len(self.dot_list):
-                show_message("Congrats, you won!")
+                show_message("Congrats, you won!", score=self.player.score,
+                             time=self.elapsed_time())
                 return
 
-            ghost_collide = pygame.sprite.spritecollide(self.player, self.ghost_list, False)
+            ghost_collide = pygame.sprite.spritecollide(self.player,
+                                                        self.ghost_list, False)
 
             if ghost_collide:
-                show_message("Game Over!")
+                show_message("Game Over!", score=self.player.score,
+                             time=self.elapsed_time())
                 return
 
             # Partially update the display
@@ -240,7 +246,87 @@ class Game:
 current_game = Game()
 
 
-def show_message(message):
+def user_input(prompt):
+    logger.info("Getting user input...")
+    output = ""
+
+    while True:
+        event = pygame.event.poll()
+
+        if event.type == pygame.KEYDOWN:
+            key = pygame.key.name(event.key)
+
+            if len(key) == 1:
+                output += key
+            elif key == "backspace":
+                output = output[:len(output) - 1]
+            elif key == "space":
+                output += " "
+            elif event.key == pygame.K_RETURN:
+                break
+
+        w = pygame.Surface((screen.get_size()[0], 200))
+        w.fill((128, 128, 128))
+        screen.blit(w, (0, 200))
+
+        prompt_text = font.render(prompt, True, white)
+        screen.blit(prompt_text, [20, 233])
+
+        input_text = font.render(output.upper(), True, white)
+        screen.blit(input_text, [20, 263])
+
+        pygame.display.flip()
+
+        clock.tick()
+
+    return output
+
+
+def ask_question(question, message):
+    logger.info("Asking question...")
+
+    while True:
+        event = pygame.event.poll()
+
+        if event.type == pygame.KEYDOWN:
+            key = pygame.key.name(event.key)
+
+            if key == "y":
+                return True
+            elif key == "n":
+                return False
+
+        w = pygame.Surface((screen.get_size()[0], 200))
+        w.fill((128, 128, 128))
+        screen.blit(w, (0, 200))
+
+        text = font.render(message, True, white)
+        screen.blit(text, [20, 233])
+
+        question_text = small_font.render(question, True, white)
+        screen.blit(question_text, [20, 263])
+
+        text2 = small_font.render("Y/N", True, white)
+        screen.blit(text2, [20, 283])
+
+        pygame.display.flip()
+
+        clock.tick()
+
+
+def show_message(message, score=None, time=None):
+    if score is not None and time is not None:
+        ask_score = ask_question(("Would you like to save your score to the "
+                                  "leaderboard?"), message)
+        if ask_score:
+            name = user_input("Name:").strip()
+            school = user_input("School:").strip()
+            logger.debug("Scoreboard info: {} from {}".format(name.upper(),
+                                                              school.upper()))
+
+            if len(name) > 0 and len(school) > 0:
+                scoring.add_score(name, score, time, school)
+
     logger.info("Showing message box...")
 
     waiting = True
@@ -258,13 +344,13 @@ def show_message(message):
                     waiting = False
 
         # Grey background
-        w = pygame.Surface((screen.get_size()[0], 200))  # the size of your rect
-        w.fill((128, 128, 128))           # this fills the entire surface
-        screen.blit(w, (0, 200))    # (0,0) are the top-left coordinates
+        w = pygame.Surface((screen.get_size()[0], 200))
+        w.fill((128, 128, 128))
+        screen.blit(w, (0, 200))
 
         # Won or lost
-        text1 = font.render(message, True, white)
-        screen.blit(text1, [20, 233])
+        message_text = font.render(message, True, white)
+        screen.blit(message_text, [20, 233])
 
         text2 = font.render("To play again, press ENTER.", True, white)
         screen.blit(text2, [20, 303])

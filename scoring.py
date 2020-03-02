@@ -1,15 +1,21 @@
 import json
+from logzero import logger
 
 
 def load_scores():
+    logger.debug("Loading scores...")
     score_file = "scores.json"
-    with open(score_file) as in_file:
-        text = in_file.read()
-    scores = json.loads(text)
-    return scores
+    try:
+        with open(score_file) as in_file:
+            text = in_file.read()
+        scores = json.loads(text)
+        return scores
+    except FileNotFoundError:
+        return []
 
 
 def save_scores(new_scores):
+    logger.debug("Saving scores...")
     score_file = "scores.json"
     text = json.dumps(new_scores)
     with open(score_file, "w") as out_file:
@@ -17,6 +23,8 @@ def save_scores(new_scores):
 
 
 def add_score(name, score, time, school):
+    logger.debug("Adding score {} FROM {} - {} in {}s".format(name, school,
+                                                              score, time))
     new_score = [name, score, time, school]
     current_scores = load_scores()
     current_scores.append(new_score)
@@ -33,6 +41,7 @@ def get_sorted_scores():
 
 
 def generate_web_page():
+    logger.debug("Generating score web page...")
     # import webpage
     with open("skeleton.html") as in_file:
         web_page = in_file.read()
@@ -49,8 +58,3 @@ def generate_web_page():
     # save webpage
     with open("scoring_report.html", "w") as out_file:
         out_file.write(score_page)
-
-
-if __name__ == "__main__":
-    add_score("Ambruh", 50, 34, "The Chad")
-    generate_web_page()

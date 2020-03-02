@@ -127,7 +127,7 @@ class Game:
                         (column == 8 or column == 9 or column == 10)):
                     continue
                 else:
-                    dot = Dot(yellow, 4, 4)
+                    dot = Dot(green, 4, 4)
 
                     # Set a random location for the block
                     dot.rect.x = (30*column+6)+26

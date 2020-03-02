@@ -187,9 +187,8 @@ class Game:
         self.ghost_list.draw(screen)
 
         # Draw the score text
-        score_text = font.render("Score: {}/{}".format(self.player.score,
-                                                       len(self.dot_list)),
-                                 True, red)
+        score_text = font.render("Score: {}".format(self.player.score), True,
+                                 red)
         screen.blit(score_text, [10, 10])
 
         # Draw the elapsed time

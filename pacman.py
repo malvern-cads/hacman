@@ -221,20 +221,14 @@ class Game:
             self.do_update()
             self.do_draw()
 
-            # logger.debug("======================================")
-            # logger.debug("PINKY: turn = {}, steps = {}".format(self.pinky.turn, self.pinky.steps))
-            # logger.debug("BLINKY: turn = {}, steps = {}".format(self.blinky.turn, self.blinky.steps))
-            # logger.debug("INKY: turn = {}, steps = {}".format(self.inky.turn, self.inky.steps))
-            # logger.debug("CLYDE*: turn = {}, steps = {}".format(self.clyde.turn, self.clyde.steps))
-
             if self.player.score == len(self.dot_list):
-                doNext("Congrats, you won!", 145)
+                show_message("Congrats, you won!")
                 return
 
             ghost_collide = pygame.sprite.spritecollide(self.player, self.ghost_list, False)
 
             if ghost_collide:
-                doNext("Game Over!", 235)
+                show_message("Game Over!")
                 return
 
             # Partially update the display
@@ -246,13 +240,12 @@ class Game:
 current_game = Game()
 
 
-def doNext(message, left):
+def show_message(message):
     logger.info("Showing message box...")
 
     waiting = True
 
     while waiting:
-        print(".", end="")
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -265,19 +258,18 @@ def doNext(message, left):
                     waiting = False
 
         # Grey background
-        w = pygame.Surface((400, 200))  # the size of your rect
-        w.set_alpha(10)                # alpha level
+        w = pygame.Surface((screen.get_size()[0], 200))  # the size of your rect
         w.fill((128, 128, 128))           # this fills the entire surface
-        screen.blit(w, (100, 200))    # (0,0) are the top-left coordinates
+        screen.blit(w, (0, 200))    # (0,0) are the top-left coordinates
 
         # Won or lost
         text1 = font.render(message, True, white)
-        screen.blit(text1, [left, 233])
+        screen.blit(text1, [20, 233])
 
         text2 = font.render("To play again, press ENTER.", True, white)
-        screen.blit(text2, [135, 303])
+        screen.blit(text2, [20, 303])
         text3 = font.render("To quit, press ESCAPE.", True, white)
-        screen.blit(text3, [165, 333])
+        screen.blit(text3, [20, 333])
 
         pygame.display.flip()
 

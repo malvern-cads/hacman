@@ -67,12 +67,12 @@ pygame.font.init()
 font = pygame.font.Font("OverpassMono-Regular.ttf", 24)
 
 # default locations for Pacman and monstas
-w = 303-16  # Width
-p_h = (7*60)+19  # Pacman height
-m_h = (4*60)+19  # Monster height
-b_h = (3*60)+19  # Binky height
-i_w = 303-16-32  # Inky width
-c_w = 303+(32-16)  # Clyde width
+width = 303-16  # Width
+player_height = (7*60)+19  # Pacman height
+ghost_height = (4*60)+19  # Monster height
+binky_height = (3*60)+19  # Binky height
+inky_width = 303-16-32  # Inky width
+clyde_width = 303+(32-16)  # Clyde width
 
 
 class Game:
@@ -94,26 +94,26 @@ class Game:
         directions = json.load(open("directions.json", "r"))
 
         # Create sprites
-        self.player = Player(w, p_h, "images/Trollman.png")
+        self.player = Player(width, player_height, "images/Trollman.png")
         self.all_sprites_list.add(self.player)
         self.player_collide.add(self.player)
 
-        self.blinky = Ghost(w, b_h, "images/Blinky.png")
+        self.blinky = Ghost(width, binky_height, "images/Blinky.png")
         self.blinky.directions = directions["blinky"]
         self.all_sprites_list.add(self.blinky)
         self.ghost_list.add(self.blinky)
 
-        self.pinky = Ghost(w, m_h, "images/Pinky.png")
+        self.pinky = Ghost(width, ghost_height, "images/Pinky.png")
         self.pinky.directions = directions["pinky"]
         self.all_sprites_list.add(self.pinky)
         self.ghost_list.add(self.pinky)
 
-        self.inky = Ghost(i_w, m_h, "images/Inky.png")
+        self.inky = Ghost(inky_width, ghost_height, "images/Inky.png")
         self.inky.directions = directions["inky"]
         self.all_sprites_list.add(self.inky)
         self.ghost_list.add(self.inky)
 
-        self.clyde = Ghost(c_w, m_h, "images/Clyde.png")
+        self.clyde = Ghost(clyde_width, ghost_height, "images/Clyde.png")
         self.clyde.directions = directions["clyde"]
         self.all_sprites_list.add(self.clyde)
         self.ghost_list.add(self.clyde)
@@ -127,7 +127,7 @@ class Game:
                         (column == 8 or column == 9 or column == 10)):
                     continue
                 else:
-                    dot = Dot(yellow, 4, 4)
+                    dot = Dot(green, 4, 4)
 
                     # Set a random location for the block
                     dot.rect.x = (30*column+6)+26
@@ -187,9 +187,8 @@ class Game:
         self.ghost_list.draw(screen)
 
         # Draw the score text
-        score_text = font.render("Score: {}/{}".format(self.player.score,
-                                                       len(self.dot_list)),
-                                 True, red)
+        score_text = font.render("Score: {}".format(self.player.score), True,
+                                 red)
         screen.blit(score_text, [10, 10])
 
         # Draw the elapsed time
@@ -222,19 +221,15 @@ class Game:
             self.do_update()
             self.do_draw()
 
-            # logger.debug("======================================")
-            # logger.debug("PINKY: turn = {}, steps = {}".format(self.pinky.turn, self.pinky.steps))
-            # logger.debug("BLINKY: turn = {}, steps = {}".format(self.blinky.turn, self.blinky.steps))
-            # logger.debug("INKY: turn = {}, steps = {}".format(self.inky.turn, self.inky.steps))
-            # logger.debug("CLYDE*: turn = {}, steps = {}".format(self.clyde.turn, self.clyde.steps))
-
             if self.player.score == len(self.dot_list):
-                doNext("Congrats, you won!", 145)
+                show_message("Congrats, you won!")
+                return
 
             ghost_collide = pygame.sprite.spritecollide(self.player, self.ghost_list, False)
 
             if ghost_collide:
-                doNext("Game Over!", 235)
+                show_message("Game Over!")
+                return
 
             # Partially update the display
             pygame.display.flip()
@@ -245,39 +240,44 @@ class Game:
 current_game = Game()
 
 
-def doNext(message, left):
+def show_message(message):
     logger.info("Showing message box...")
 
-    while True:
+    waiting = True
+
+    while waiting:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                return
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
+                    return
                 if event.key == pygame.K_RETURN:
-                    # Create a new game and start it
-                    current_game = Game()
-                    current_game.start()
+                    waiting = False
 
         # Grey background
-        w = pygame.Surface((400, 200))  # the size of your rect
-        w.set_alpha(10)                # alpha level
+        w = pygame.Surface((screen.get_size()[0], 200))  # the size of your rect
         w.fill((128, 128, 128))           # this fills the entire surface
-        screen.blit(w, (100, 200))    # (0,0) are the top-left coordinates
+        screen.blit(w, (0, 200))    # (0,0) are the top-left coordinates
 
         # Won or lost
         text1 = font.render(message, True, white)
-        screen.blit(text1, [left, 233])
+        screen.blit(text1, [20, 233])
 
         text2 = font.render("To play again, press ENTER.", True, white)
-        screen.blit(text2, [135, 303])
+        screen.blit(text2, [20, 303])
         text3 = font.render("To quit, press ESCAPE.", True, white)
-        screen.blit(text3, [165, 333])
+        screen.blit(text3, [20, 333])
 
         pygame.display.flip()
 
         clock.tick(10)
+
+    # Create a new game and start it
+    current_game = Game()
+    current_game.start()
 
 
 logger.info("Starting hacman!")

@@ -4,6 +4,10 @@
 import pygame
 import json
 from logzero import logger
+from models.wall import Wall
+from models.player import Player
+from models.ghost import Ghost
+from models.dot import Dot
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -15,23 +19,6 @@ yellow = (255, 255, 0)
 
 Trollicon = pygame.image.load('images/Trollman.png')
 pygame.display.set_icon(Trollicon)
-
-
-# This class represents the bar at the bottom that the player controls
-class Wall(pygame.sprite.Sprite):
-    # Constructor function
-    def __init__(self, x, y, width, height, color):
-        # Call the parent's constructor
-        pygame.sprite.Sprite.__init__(self)
-
-        # Make a blue wall, of the size specified in the parameters
-        self.image = pygame.Surface([width, height])
-        self.image.fill(color)
-
-        # Make our top-left corner the passed-in location.
-        self.rect = self.image.get_rect()
-        self.rect.top = y
-        self.rect.left = x
 
 
 # This creates all the walls in room 1
@@ -60,141 +47,17 @@ def setupGate(all_sprites_list):
     return gate
 
 
-# This class represents the ball
-# It derives from the "Sprite" class in Pygame
-class Block(pygame.sprite.Sprite):
-    # Constructor. Pass in the color of the block,
-    # and its x and y position
-    def __init__(self, color, width, height):
-        # Call the parent class (Sprite) constructor
-        pygame.sprite.Sprite.__init__(self)
-
-        # Create an image of the block, and fill it with a color.
-        # This could also be an image loaded from the disk.
-        self.image = pygame.Surface([width, height])
-        self.image.fill(white)
-        self.image.set_colorkey(white)
-        pygame.draw.ellipse(self.image, color, [0, 0, width, height])
-
-        # Fetch the rectangle object that has the dimensions of the image
-        # image.
-        # Update the position of this object by setting the values
-        # of rect.x and rect.y
-        self.rect = self.image.get_rect()
-
-
-# This class represents the bar at the bottom that the player controls
-class Player(pygame.sprite.Sprite):
-    # Set speed vector
-    change_x = 0
-    change_y = 0
-
-    # Constructor function
-    def __init__(self, x, y, filename):
-        # Call the parent's constructor
-        pygame.sprite.Sprite.__init__(self)
-
-        # Set height, width
-        self.image = pygame.image.load(filename).convert()
-
-        # Make our top-left corner the passed-in location.
-        self.rect = self.image.get_rect()
-        self.rect.top = y
-        self.rect.left = x
-        self.prev_x = x
-        self.prev_y = y
-
-    # Clear the speed of the player
-    def prevdirection(self):
-        self.prev_x = self.change_x
-        self.prev_y = self.change_y
-
-    # Change the speed of the player
-    def changespeed(self, x, y):
-        self.change_x += x
-        self.change_y += y
-
-    # Find a new position for the player
-    def update(self, walls, gate):
-        # Get the old position, in case we need to go back to it
-
-        old_x = self.rect.left
-        new_x = old_x+self.change_x
-        self.rect.left = new_x
-
-        old_y = self.rect.top
-        new_y = old_y+self.change_y
-
-        # Did this update cause us to hit a wall?
-        x_collide = pygame.sprite.spritecollide(self, walls, False)
-        if x_collide:
-            # Whoops, hit a wall. Go back to the old position
-            self.rect.left = old_x
-            # self.rect.top=prev_y
-            # y_collide = pygame.sprite.spritecollide(self, walls, False)
-            # if y_collide:
-            #     # Whoops, hit a wall. Go back to the old position
-            #     self.rect.top=old_y
-            #     print('a')
-        else:
-
-            self.rect.top = new_y
-
-            # Did this update cause us to hit a wall?
-            y_collide = pygame.sprite.spritecollide(self, walls, False)
-            if y_collide:
-                # Whoops, hit a wall. Go back to the old position
-                self.rect.top = old_y
-                # self.rect.left=prev_x
-                # x_collide = pygame.sprite.spritecollide(self, walls, False)
-                # if x_collide:
-                #     # Whoops, hit a wall. Go back to the old position
-                #     self.rect.left=old_x
-                #     print('b')
-
-        if gate is not False:
-            gate_hit = pygame.sprite.spritecollide(self, gate, False)
-            if gate_hit:
-                self.rect.left = old_x
-                self.rect.top = old_y
-
-
-# Inheritime Player klassist
-class Ghost(Player):
-    # Change the speed of the ghost
-    def changespeed(self, list, ghost, turn, steps, l):
-        try:
-            z = list[turn][2]
-            if steps < z:
-                self.change_x = list[turn][0]
-                self.change_y = list[turn][1]
-                steps += 1
-            else:
-                if turn < l:
-                    turn += 1
-                elif ghost == "clyde":
-                    turn = 2
-                else:
-                    turn = 0
-                self.change_x = list[turn][0]
-                self.change_y = list[turn][1]
-                steps = 0
-            return [turn, steps]
-        except IndexError:
-            return [0, 0]
-
-
 logger.debug("Loading directions file...")
 directions = json.load(open("directions.json", "r"))
-Pinky_directions = directions["pinky"]
-Blinky_directions = directions["blinky"]
-Inky_directions = directions["inky"]
-Clyde_directions = directions["clyde"]
+pinky_directions = directions["pinky"]
+blinky_directions = directions["blinky"]
+inky_directions = directions["inky"]
+clyde_directions = directions["clyde"]
 
-pl = len(Pinky_directions)-1
-bl = len(Blinky_directions)-1
-il = len(Inky_directions)-1
-cl = len(Clyde_directions)-1
+pl = len(pinky_directions)-1
+bl = len(blinky_directions)-1
+il = len(inky_directions)-1
+cl = len(clyde_directions)-1
 
 # Call this function so the Pygame library can initialize itself
 pygame.init()
@@ -207,7 +70,7 @@ screen = pygame.display.set_mode([606, 606])
 
 
 # Set the title of the window
-pygame.display.set_caption('Pacman')
+pygame.display.set_caption('Hacman')
 
 # Create a surface we can draw on
 background = pygame.Surface(screen.get_size())
@@ -283,7 +146,7 @@ def startGame():
                     (column == 8 or column == 9 or column == 10)):
                 continue
             else:
-                block = Block(yellow, 4, 4)
+                block = Dot(yellow, 4, 4)
 
                 # Set a random location for the block
                 block.rect.x = (30*column+6)+26
@@ -338,31 +201,31 @@ def startGame():
         Pacman.update(wall_list, gate)
 
         returned = Pinky.changespeed(
-            Pinky_directions, False, p_turn, p_steps, pl)
+            pinky_directions, False, p_turn, p_steps, pl)
         p_turn = returned[0]
         p_steps = returned[1]
-        Pinky.changespeed(Pinky_directions, False, p_turn, p_steps, pl)
+        Pinky.changespeed(pinky_directions, False, p_turn, p_steps, pl)
         Pinky.update(wall_list, False)
 
         returned = Blinky.changespeed(
-            Blinky_directions, False, b_turn, b_steps, bl)
+            blinky_directions, False, b_turn, b_steps, bl)
         b_turn = returned[0]
         b_steps = returned[1]
-        Blinky.changespeed(Blinky_directions, False, b_turn, b_steps, bl)
+        Blinky.changespeed(blinky_directions, False, b_turn, b_steps, bl)
         Blinky.update(wall_list, False)
 
         returned = Inky.changespeed(
-            Inky_directions, False, i_turn, i_steps, il)
+            inky_directions, False, i_turn, i_steps, il)
         i_turn = returned[0]
         i_steps = returned[1]
-        Inky.changespeed(Inky_directions, False, i_turn, i_steps, il)
+        Inky.changespeed(inky_directions, False, i_turn, i_steps, il)
         Inky.update(wall_list, False)
 
         returned = Clyde.changespeed(
-            Clyde_directions, "clyde", c_turn, c_steps, cl)
+            clyde_directions, "clyde", c_turn, c_steps, cl)
         c_turn = returned[0]
         c_steps = returned[1]
-        Clyde.changespeed(Clyde_directions, "clyde", c_turn, c_steps, cl)
+        Clyde.changespeed(clyde_directions, "clyde", c_turn, c_steps, cl)
         Clyde.update(wall_list, False)
 
         # See if the Pacman block has collided with anything.

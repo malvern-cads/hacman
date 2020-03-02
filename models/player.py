@@ -6,6 +6,7 @@ class Player(pygame.sprite.Sprite):
     # Set speed vector
     change_x = 0
     change_y = 0
+    score = 0
 
     # Constructor function
     def __init__(self, x, y, filename):

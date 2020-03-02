@@ -3,24 +3,28 @@ from models.player import Player
 
 # Inheritime Player klassist
 class Ghost(Player):
+    turn = 0
+    steps = 0
+    directions = []
+
     # Change the speed of the ghost
-    def changespeed(self, list, ghost, turn, steps, l):
+    def changespeed(self, ghost):
         try:
-            z = list[turn][2]
-            if steps < z:
-                self.change_x = list[turn][0]
-                self.change_y = list[turn][1]
-                steps += 1
+            z = self.directions[self.turn][2]
+            if self.steps < z:
+                self.change_x = self.directions[self.turn][0]
+                self.change_y = self.directions[self.turn][1]
+                self.steps += 1
             else:
-                if turn < l:
-                    turn += 1
+                if self.turn < (len(self.directions) - 1):
+                    self.turn += 1
                 elif ghost == "clyde":
-                    turn = 2
+                    self.turn = 2
                 else:
-                    turn = 0
-                self.change_x = list[turn][0]
-                self.change_y = list[turn][1]
-                steps = 0
-            return [turn, steps]
+                    self.turn = 0
+                self.change_x = self.directions[self.turn][0]
+                self.change_y = self.directions[self.turn][1]
+                self.steps = 0
         except IndexError:
-            return [0, 0]
+            self.turn = 0
+            self.steps = 0

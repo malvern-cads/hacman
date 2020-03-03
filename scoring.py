@@ -58,3 +58,7 @@ def generate_web_page():
     # save webpage
     with open("scoring_report.html", "w") as out_file:
         out_file.write(score_page)
+
+
+if __name__ == "__main__":
+    generate_web_page()

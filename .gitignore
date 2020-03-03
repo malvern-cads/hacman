@@ -130,3 +130,5 @@ dmypy.json
 
 .vscode/
 scoring_report.html
+
+scores.json

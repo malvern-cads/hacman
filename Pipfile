@@ -10,6 +10,7 @@ autopep8 = "*"
 [packages]
 pygame = "*"
 logzero = "*"
+jinja2 = "*"
 
 [requires]
 python_version = "3.7"

@@ -1,6 +1,9 @@
 import json
 from logzero import logger
+from jinja2 import Template
 
+# The maximum number of scores to show on the scoreboard
+scoreboard_limit = 30
 
 def load_scores():
     logger.debug("Loading scores...")
@@ -48,17 +51,11 @@ def get_sorted_scores():
 def generate_web_page():
     logger.debug("Generating score web page...")
     # import webpage
-    with open("skeleton.html") as in_file:
-        web_page = in_file.read()
+    with open("skeleton.jinja2") as in_file:
+        template = Template(in_file.read())
 
-    scores = get_sorted_scores()
-    row_format = "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>"
-    table = ""
-    for user in scores:
-        text_score = row_format.format(user["name"], user["score"], user["time"], user["school"])
-        table += text_score
-
-    score_page = web_page.format(table)
+    scores = get_sorted_scores()[:scoreboard_limit]
+    score_page = template.render(scores=scores)
 
     # save webpage
     with open("scoring_report.html", "w") as out_file:

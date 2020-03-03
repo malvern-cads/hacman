@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link href="https://fonts.googleapis.com/css?family=Overpass+Mono&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cadscheme.co.uk/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cadscheme.co.uk/css/cads.css">
+
+        <style>
+            .first {
+                background-color: #ffd700 !important;
+                color: #000 !important;
+                font-size: 1.25em;
+                font-weight: bold;
+            }
+
+            .second {
+                background-color: #c0c0c0 !important;
+                color: #000 !important;
+            }
+
+            .third {
+                background-color: #cd7f32 !important;
+                color: #000 !important;
+            }
+        </style>
+
+        <title>Hacman Leaderboard</title>
+    </head>
+    <body>
+        <div class="section">
+            <div class="container">
+                <h1>Hacman Leaderboard</h1>
+
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">School</th>
+                            <th scope="col">Score</th>
+                            <th scope="col">Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in scores %}
+                            <tr class="{{ 'first' if loop.index == 1 }} {{ 'second' if loop.index == 2 }} {{ 'third' if loop.index == 3 }}">
+                                <th scope="row">{{ loop.index }}</th>
+                                <td>{{ entry.name | title }}</td>
+                                <td>{{ entry.school | title }}</td>
+                                <td>{{ entry.score }}</td>
+                                <td>{{ entry.time }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <script>
+            setTimeout(function() {
+                window.location.reload(1);
+            }, 4000);
+        </script>
+    </body>
+</html>

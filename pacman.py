@@ -79,6 +79,7 @@ clyde_width = 303+(32-16)  # Clyde width
 
 class Game:
     start_time = 0
+    max_score = None
 
     def __init__(self):
         logger.info("Creating new game...")
@@ -147,6 +148,8 @@ class Game:
                         # Add the block to the list of objects
                         self.dot_list.add(dot)
                         self.all_sprites_list.add(dot)
+
+        self.max_score = len(self.dot_list)
 
     def elapsed_time(self):
         return round((pygame.time.get_ticks() - self.start_time) / 1000, 1)
@@ -224,7 +227,7 @@ class Game:
             self.do_update()
             self.do_draw()
 
-            if self.player.score == len(self.dot_list):
+            if self.player.score == self.max_score:
                 show_message("Congrats, you won!", score=self.player.score,
                              time=self.elapsed_time())
                 return

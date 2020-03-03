@@ -71,10 +71,9 @@ small_font = pygame.font.Font("OverpassMono-Regular.ttf", 16)
 # default locations for Pacman and monstas
 width = 303-16  # Width
 player_height = (7*60)+19  # Pacman height
-ghost_height = (4*60)+19  # Monster height
-binky_height = (3*60)+19  # Binky height
-inky_width = 303-16-32  # Inky width
-clyde_width = 303+(32-16)  # Clyde width
+
+ghost_starting_x = 303 - 16
+ghost_starting_y = 303 - 96
 
 
 class Game:
@@ -101,22 +100,22 @@ class Game:
         self.all_sprites_list.add(self.player)
         self.player_collide.add(self.player)
 
-        self.blinky = Ghost(width, binky_height, "images/Blinky.png")
+        self.blinky = Ghost(ghost_starting_x, ghost_starting_y, "images/Blinky.png")
         self.blinky.directions = directions["blinky"]
         self.all_sprites_list.add(self.blinky)
         self.ghost_list.add(self.blinky)
 
-        self.pinky = Ghost(width, ghost_height, "images/Pinky.png")
+        self.pinky = Ghost(ghost_starting_x, ghost_starting_y, "images/Pinky.png")
         self.pinky.directions = directions["pinky"]
         self.all_sprites_list.add(self.pinky)
         self.ghost_list.add(self.pinky)
 
-        self.inky = Ghost(inky_width, ghost_height, "images/Inky.png")
+        self.inky = Ghost(ghost_starting_x, ghost_starting_y, "images/Inky.png")
         self.inky.directions = directions["inky"]
         self.all_sprites_list.add(self.inky)
         self.ghost_list.add(self.inky)
 
-        self.clyde = Ghost(clyde_width, ghost_height, "images/Clyde.png")
+        self.clyde = Ghost(ghost_starting_x, ghost_starting_y, "images/Clyde.png")
         self.clyde.directions = directions["clyde"]
         self.all_sprites_list.add(self.clyde)
         self.ghost_list.add(self.clyde)
@@ -159,20 +158,16 @@ class Game:
         self.player.update(self.walls, self.gate)
 
         # Update ghost locations
-        self.pinky.changespeed(False)
-        self.pinky.changespeed(False)
+        self.pinky.changespeed(self.walls)
         self.pinky.update(self.walls, False)
 
-        self.blinky.changespeed(False)
-        self.blinky.changespeed(False)
+        self.blinky.changespeed(self.walls)
         self.blinky.update(self.walls, False)
 
-        self.inky.changespeed(False)
-        self.inky.changespeed(False)
+        self.inky.changespeed(self.walls)
         self.inky.update(self.walls, False)
 
-        self.clyde.changespeed("clyde")
-        self.clyde.changespeed("clyde")
+        self.clyde.changespeed(self.walls)
         self.clyde.update(self.walls, False)
 
         # Get a list of the dots that the player has hit

@@ -100,22 +100,22 @@ class Game:
         self.all_sprites_list.add(self.player)
         self.player_collide.add(self.player)
 
-        self.blinky = Ghost(ghost_starting_x, ghost_starting_y, "images/Blinky.png")
+        self.blinky = Ghost(ghost_starting_x, ghost_starting_y, "images/Blinky.png", "blinky", self.player)
         self.blinky.directions = directions["blinky"]
         self.all_sprites_list.add(self.blinky)
         self.ghost_list.add(self.blinky)
 
-        self.pinky = Ghost(ghost_starting_x, ghost_starting_y, "images/Pinky.png")
+        self.pinky = Ghost(ghost_starting_x, ghost_starting_y, "images/Pinky.png", "pinky", self.player)
         self.pinky.directions = directions["pinky"]
         self.all_sprites_list.add(self.pinky)
         self.ghost_list.add(self.pinky)
 
-        self.inky = Ghost(ghost_starting_x, ghost_starting_y, "images/Inky.png")
+        self.inky = Ghost(ghost_starting_x, ghost_starting_y, "images/Inky.png", "inky", self.player)
         self.inky.directions = directions["inky"]
         self.all_sprites_list.add(self.inky)
         self.ghost_list.add(self.inky)
 
-        self.clyde = Ghost(ghost_starting_x, ghost_starting_y, "images/Clyde.png")
+        self.clyde = Ghost(ghost_starting_x, ghost_starting_y, "images/Clyde.png", "clyde", self.player)
         self.clyde.directions = directions["clyde"]
         self.all_sprites_list.add(self.clyde)
         self.ghost_list.add(self.clyde)

@@ -53,10 +53,7 @@ class Ghost(Player):
             self.direction = random.choice(possible)
         # corner time
         elif self.direction not in possible and len(possible) == 2:
-            print("corner")
-            print(self.direction)
             self.direction = [i for i in possible if abs(i[0]) != abs(self.direction[0])][0]
-            print(self.direction)
 
 
         # if there is a wall then choose another direction
@@ -68,7 +65,7 @@ class Ghost(Player):
         self.change_x = self.direction[0] * self.unit_direction
         self.change_y = self.direction[1] * self.unit_direction
 
-        
+
     def get_junction(self, walls, cx, cy):
         possible = []
         for direction in self.possible_directions:

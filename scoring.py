@@ -25,7 +25,12 @@ def save_scores(new_scores):
 def add_score(name, score, time, school):
     logger.debug("Adding score {} FROM {} - {} in {}s".format(name, school,
                                                               score, time))
-    new_score = [name, score, time, school]
+    new_score = {
+            "name": name,
+            "score": score,
+            "time": time,
+            "school": school
+        }
     current_scores = load_scores()
     current_scores.append(new_score)
     save_scores(current_scores)
@@ -36,7 +41,7 @@ def get_sorted_scores():
 
     # sort by score highest to lowest
     # and then sort by time lowest to highest
-    scores.sort(key=lambda x: (-x[1], x[2]))
+    scores.sort(key=lambda x: (-x["score"], x["time"]))
     return scores
 
 
@@ -50,7 +55,7 @@ def generate_web_page():
     row_format = "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>"
     table = ""
     for user in scores:
-        text_score = row_format.format(*user)
+        text_score = row_format.format(user["name"], user["score"], user["time"], user["school"])
         table += text_score
 
     score_page = web_page.format(table)

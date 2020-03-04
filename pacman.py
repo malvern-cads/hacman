@@ -228,7 +228,8 @@ class Game:
 
             if self.player.score == self.max_score:
                 show_message("Congrats, you won!", score=self.player.score,
-                             time=self.elapsed_time())
+                             time=self.elapsed_time(),
+                             winner=self.player.score >= 150)
                 return
 
             ghost_collide = pygame.sprite.spritecollide(self.player,
@@ -236,7 +237,8 @@ class Game:
 
             if ghost_collide:
                 show_message("Game Over!", score=self.player.score,
-                             time=self.elapsed_time())
+                             time=self.elapsed_time(),
+                             winner=self.player.score >= 150)
                 return
 
             # Partially update the display
@@ -316,7 +318,7 @@ def ask_question(question, message):
         clock.tick()
 
 
-def show_message(message, score=None, time=None):
+def show_message(message, score=None, time=None, winner=False):
     if score is not None and time is not None:
         name = user_input("Name:").strip()
         school = user_input("School:").strip()
@@ -350,6 +352,10 @@ def show_message(message, score=None, time=None):
         # Won or lost
         message_text = font.render(message, True, white)
         screen.blit(message_text, [20, 233])
+
+        if winner:
+            win_text = font.render("You scored high! Get a sweet", True, white)
+            screen.blit(win_text, [20, 263])
 
         text2 = font.render("To play again, press ENTER.", True, white)
         screen.blit(text2, [20, 303])

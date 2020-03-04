@@ -97,8 +97,11 @@ class Game:
 
         # Create sprites
         self.player = Player(width, player_height, "images/Trollman.png")
+        self.player2 = Player(width, player_height, "images/pacman.png")
         self.all_sprites_list.add(self.player)
+        self.all_sprites_list.add(self.player2)
         self.player_collide.add(self.player)
+        self.player_collide.add(self.player2)
 
         self.blinky = Ghost(ghost_starting_x, ghost_starting_y,
                             "images/Blinky.png", "blinky", self.player)
@@ -160,6 +163,7 @@ class Game:
     def do_update(self):
         # Update player location
         self.player.update(self.walls, self.gate)
+        self.player2.update(self.walls, self.gate)
 
         # Update ghost locations
         self.pinky.changespeed(self.walls)
@@ -177,9 +181,13 @@ class Game:
         # Get a list of the dots that the player has hit
         dots_hit = pygame.sprite.spritecollide(self.player, self.dot_list,
                                                True)
+        dots2_hit = pygame.sprite.spritecollide(self.player2, self.dot_list,
+                            True)
 
         if len(dots_hit) > 0:
             self.player.score += 1
+        if len(dots2_hit) > 0:
+            self.player2.score += 1
 
     def do_draw(self):
         # Clear the screen
@@ -192,7 +200,7 @@ class Game:
         self.ghost_list.draw(screen)
 
         # Draw the score text
-        score_text = font.render("Score: {}".format(self.player.score), True,
+        score_text = font.render("Score: {}".format(self.player.score + self.player2.score), True,
                                  red)
         screen.blit(score_text, [10, 10])
 
@@ -214,29 +222,39 @@ class Game:
                     return
 
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                    if event.key == pygame.K_LEFT:
                         self.player.setspeed(-30, 0)
-                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                    if event.key == pygame.K_RIGHT:
                         self.player.setspeed(30, 0)
-                    if event.key == pygame.K_UP or event.key == pygame.K_w:
+                    if event.key == pygame.K_UP:
                         self.player.setspeed(0, -30)
-                    if event.key == pygame.K_DOWN or event.key == pygame.K_s:
+                    if event.key == pygame.K_DOWN:
                         self.player.setspeed(0, 30)
+                    if event.key == pygame.K_a:
+                        self.player2.setspeed(-30, 0)
+                    if event.key == pygame.K_d:
+                        self.player2.setspeed(30, 0)
+                    if event.key == pygame.K_w:
+                        self.player2.setspeed(0, -30)
+                    if event.key == pygame.K_s:
+                        self.player2.setspeed(0, 30)
 
             self.do_update()
             self.do_draw()
 
-            if self.player.score == self.max_score:
-                show_message("Congrats, you won!", score=self.player.score,
+            if (self.player.score + self.player2.score) == self.max_score:
+                show_message("Congrats, you won!", score=self.player.score + self.player2.score,
                              time=self.elapsed_time(),
                              winner=self.player.score >= 150)
                 return
 
             ghost_collide = pygame.sprite.spritecollide(self.player,
                                                         self.ghost_list, False)
+            ghost2_collide = pygame.sprite.spritecollide(self.player2,
+                        self.ghost_list, False)
 
-            if ghost_collide:
-                show_message("Game Over!", score=self.player.score,
+            if ghost_collide or ghost2_collide:
+                show_message("Game Over!", score=self.player.score + self.player2.score,
                              time=self.elapsed_time(),
                              winner=self.player.score >= 150)
                 return

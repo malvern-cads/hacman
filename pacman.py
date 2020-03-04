@@ -318,16 +318,13 @@ def ask_question(question, message):
 
 def show_message(message, score=None, time=None):
     if score is not None and time is not None:
-        ask_score = ask_question(("Would you like to save your score to the "
-                                  "leaderboard?"), message)
-        if ask_score:
-            name = user_input("Name:").strip()
-            school = user_input("School:").strip()
-            logger.debug("Scoreboard info: {} from {}".format(name.upper(),
-                                                              school.upper()))
+        name = user_input("Names:").strip()
+        school = user_input("School:").strip()
+        logger.debug("Scoreboard info: {} from {}".format(name.upper(),
+                                                          school.upper()))
 
-            if len(name) > 0 and len(school) > 0:
-                scoring.add_score(name, score, time, school)
+        if len(name) > 0 and len(school) > 0:
+            scoring.add_score(name, score, time, school)
 
     logger.info("Showing message box...")
 

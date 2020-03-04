@@ -214,13 +214,13 @@ class Game:
                     return
 
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                         self.player.setspeed(-30, 0)
-                    if event.key == pygame.K_RIGHT:
+                    if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                         self.player.setspeed(30, 0)
-                    if event.key == pygame.K_UP:
+                    if event.key == pygame.K_UP or event.key == pygame.K_w:
                         self.player.setspeed(0, -30)
-                    if event.key == pygame.K_DOWN:
+                    if event.key == pygame.K_DOWN or event.key == pygame.K_s:
                         self.player.setspeed(0, 30)
 
             self.do_update()
@@ -369,5 +369,6 @@ def show_message(message, score=None, time=None):
 
 
 logger.info("Starting hacman!")
+show_message("Welcome to Hacman!")
 current_game.start()
 pygame.quit()

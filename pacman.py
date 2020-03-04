@@ -242,7 +242,7 @@ class Game:
             # Partially update the display
             pygame.display.flip()
 
-            clock.tick(10)
+            clock.tick(15)
 
 
 current_game = Game()
@@ -318,7 +318,7 @@ def ask_question(question, message):
 
 def show_message(message, score=None, time=None):
     if score is not None and time is not None:
-        name = user_input("Names:").strip()
+        name = user_input("Name:").strip()
         school = user_input("School:").strip()
         logger.debug("Scoreboard info: {} from {}".format(name.upper(),
                                                           school.upper()))

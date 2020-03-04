@@ -242,7 +242,7 @@ class Game:
             # Partially update the display
             pygame.display.flip()
 
-            clock.tick(15)
+            clock.tick(13)
 
 
 current_game = Game()
